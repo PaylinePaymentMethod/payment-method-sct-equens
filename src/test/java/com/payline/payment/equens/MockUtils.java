@@ -24,12 +24,15 @@ import com.payline.pmapi.bean.paymentform.request.PaymentFormLogoRequest;
 import org.tomitribe.auth.signatures.Algorithm;
 import org.tomitribe.auth.signatures.Signature;
 import org.tomitribe.auth.signatures.Signer;
+import org.tomitribe.auth.signatures.SigningAlgorithm;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.tomitribe.auth.signatures.Algorithm.RSA_SHA256;
 
 /**
  * Utility class that generates mocks of frequently used objects.
@@ -559,7 +562,8 @@ public class MockUtils {
      * Generate a sample {@link Signature}.
      */
     public static Signature aSignature(){
-        Signature signature = new Signature("a-key-id", Algorithm.RSA_SHA256, null, "(request-target)" );
+        List<String> parameters = Arrays.asList("(request-target)");
+        Signature signature = new Signature("a-key-id", SigningAlgorithm.RSA_SHA256.toString(),Algorithm.RSA_SHA256.toString(), null, parameters);
         Signer signer = new Signer( aPrivateKey(), signature );
         try {
             signature = signer.sign( "POST", "/some/path", new HashMap<>() );

@@ -15,6 +15,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.message.BasicHeader;
 import org.tomitribe.auth.signatures.Signature;
 import org.tomitribe.auth.signatures.Signer;
+import org.tomitribe.auth.signatures.SigningAlgorithm;
 
 import java.io.IOException;
 import java.security.*;
@@ -137,7 +138,9 @@ abstract class EquensHttpClient extends OAuthHttpClient {
 
         // @see https://github.com/tomitribe/http-signatures-java
         // Create a signer
-        Signature signature = new Signature(keyId, RSA_SHA256, null, "app", "client", "id", "date");
+        List<String> parameters = Arrays.asList("app","client","id","date");
+        Signature signature = new Signature(keyId, SigningAlgorithm.RSA_SHA256.toString(), RSA_SHA256.toString(), null,parameters);
+
         Signer signer = new Signer(pk, signature);
 
         // Sign the HTTP message
