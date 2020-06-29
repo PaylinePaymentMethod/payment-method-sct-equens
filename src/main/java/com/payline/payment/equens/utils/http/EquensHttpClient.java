@@ -96,7 +96,7 @@ abstract class EquensHttpClient extends OAuthHttpClient {
 
         // Generate the request signature
         Signature signature = this.generateSignature( uri, headers );
-        String finalSignature = signature.toString().replace(RSA_SHA256.getPortableName(), RSA_SHA256.getJmvName());
+        String finalSignature = signature.toString().replace(RSA_SHA256.getPortableName(), RSA_SHA256.getJvmName());
 
         // Insert the signature into the header Authorization
         headers.put(HttpHeaders.AUTHORIZATION, finalSignature);
