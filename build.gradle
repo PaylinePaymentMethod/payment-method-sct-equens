@@ -3,9 +3,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "org.sonarqube" version "3.0"
     id "org.owasp.dependencycheck" version "5.3.2.1"
+    id "jacoco"
 }
 
-apply plugin: 'maven'
+
 apply plugin: 'maven-publish'
 apply plugin: 'java-library'
 apply plugin: 'jacoco'
@@ -88,4 +89,9 @@ processResources {
 test {
     useJUnitPlatform()
     exclude('**/*IT.class')
+}
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }
