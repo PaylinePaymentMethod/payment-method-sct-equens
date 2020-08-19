@@ -8,6 +8,7 @@ import com.payline.payment.equens.bean.business.psu.PsuCreateRequest;
 import com.payline.payment.equens.bean.configuration.RequestConfiguration;
 import com.payline.payment.equens.exception.InvalidDataException;
 import com.payline.payment.equens.exception.PluginException;
+import com.payline.payment.equens.service.impl.PaymentServiceImpl;
 import com.payline.payment.equens.utils.Constants;
 import com.payline.payment.equens.utils.http.PisHttpClient;
 import com.payline.payment.equens.utils.http.PsuHttpClient;
@@ -25,7 +26,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class Payment {
-    private final Logger logger = LogManager.getLogger(Payment.class);
+    private final Logger LOGGER = LogManager.getLogger(PaymentServiceImpl.class);
 
     private PisHttpClient pisHttpClient = PisHttpClient.getInstance();
     private PsuHttpClient psuHttpclient = PsuHttpClient.getInstance();
@@ -173,7 +174,7 @@ public class Payment {
         } catch (PluginException e) {
             paymentResponse = e.toPaymentResponseFailureBuilder().build();
         } catch (RuntimeException e) {
-            logger.error("Unexpected plugin error", e);
+            LOGGER.error("Unexpected plugin error", e);
             paymentResponse = PaymentResponseFailure.PaymentResponseFailureBuilder
                     .aPaymentResponseFailure()
                     .withErrorCode(PluginException.runtimeErrorCode(e))
