@@ -66,13 +66,12 @@ assemble.dependsOn shadowJar
 shadowJar {
     archiveClassifier.set("")
     dependencies {
-        exclude('com.payline:payment-method-api')
-        exclude('org.apache.logging.log4j:log4j-api:2.13.3')
-        exclude('org.apache.logging.log4j:log4j-core:2.13.3')
+        exclude(dependency('com.payline:payment-method-api'))
+        exclude(dependency('org.apache.logging.log4j:log4j-api:2.13.3'))
+        exclude(dependency('org.apache.logging.log4j:log4j-core:2.13.3'))
 
-        exclude('org.junit.jupiter:junit-jupiter-params')
-        exclude('org.junit.jupiter:junit-jupiter-api')
-
+        exclude(dependency('org.junit.jupiter:junit-jupiter-params'))
+        exclude(dependency('org.junit.jupiter:junit-jupiter-api'))
     }
 
 }
