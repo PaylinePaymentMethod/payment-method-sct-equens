@@ -4,6 +4,7 @@ import com.payline.payment.sctequens.MockUtils;
 import com.payline.payment.sctequens.bean.business.reachdirectory.GetAspspsResponse;
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.PluginException;
+import com.payline.payment.sctequens.service.JsonService;
 import com.payline.payment.sctequens.utils.Constants;
 import com.payline.payment.sctequens.utils.PluginUtils;
 import com.payline.payment.sctequens.utils.http.PisHttpClient;
@@ -17,7 +18,10 @@ import com.payline.pmapi.bean.configuration.request.ContractParametersCheckReque
 import com.payline.pmapi.bean.configuration.request.RetrievePluginConfigurationRequest;
 import com.payline.pmapi.bean.payment.ContractConfiguration;
 import com.payline.pmapi.bean.payment.ContractProperty;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
@@ -187,9 +191,9 @@ class ConfigurationServiceImplTest {
     void retrievePluginConfiguration_nominal(){
         // given: the HTTP client returns a proper response
         String input = PluginUtils.extractBanks( MockUtils.aPluginConfiguration());
-        doReturn( GetAspspsResponse.fromJson( input ) ).when( pisHttpClient ).getAspsps( any(RequestConfiguration.class) );
+        doReturn( JsonService.getInstance().fromJson( input, GetAspspsResponse.class ) ).when( pisHttpClient ).getAspsps( any(RequestConfiguration.class) );
 
-        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration();
+        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
         contractConfiguration.getContractProperties().put(Constants.ContractConfigurationKeys.ONBOARDING_ID, new ContractProperty( "000000" ));
         RetrievePluginConfigurationRequest request = MockUtils.aRetrievePluginConfigurationRequestBuilder()
                 .withPluginConfiguration("")
@@ -207,7 +211,7 @@ class ConfigurationServiceImplTest {
         verify( pisHttpClient, times(1) ).getAspsps( requestConfigurationCaptor.capture() );
         ContractConfiguration ccArg = requestConfigurationCaptor.getValue().getContractConfiguration();
         assertEquals( 2, ccArg.getContractProperties().size() );
-        assertNotEquals( "000000", ccArg.getProperty( Constants.ContractConfigurationKeys.ONBOARDING_ID ) );
+        assertNotEquals( "000000", ccArg.getProperty( Constants.ContractConfigurationKeys.ONBOARDING_ID ).getValue() );
     }
 
     @Test

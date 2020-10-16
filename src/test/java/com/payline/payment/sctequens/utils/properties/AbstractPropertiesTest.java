@@ -1,7 +1,7 @@
 package com.payline.payment.sctequens.utils.properties;
 
-import org.junit.jupiter.api.Test;
 import com.payline.payment.sctequens.exception.PluginException;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

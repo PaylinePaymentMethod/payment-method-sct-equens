@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class EquensHttpClientTest {
+class EquensHttpClientTest {
 
     /**
      * Private class required to test the sbstract class {@link EquensHttpClient}.
@@ -77,7 +77,7 @@ public class EquensHttpClientTest {
     void authorizationHeaders_missingclientName(){
         // given: client name is missing from ContractConfiguration
         String uri = "http://test.domain.fr/path";
-        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration();
+        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
         contractConfiguration.getContractProperties().remove(Constants.ContractConfigurationKeys.CLIENT_NAME);
         RequestConfiguration requestConfiguration = new RequestConfiguration(contractConfiguration, MockUtils.anEnvironment(), MockUtils.aPartnerConfiguration());
 
@@ -89,7 +89,7 @@ public class EquensHttpClientTest {
     void authorizationHeaders_missingOnboardingId(){
         // given: onboarding id is missing from ContractConfiguration
         String uri = "http://test.domain.fr/path";
-        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration();
+        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
         contractConfiguration.getContractProperties().remove(Constants.ContractConfigurationKeys.ONBOARDING_ID);
         RequestConfiguration requestConfiguration = new RequestConfiguration(contractConfiguration, MockUtils.anEnvironment(), MockUtils.aPartnerConfiguration());
 
@@ -182,7 +182,7 @@ public class EquensHttpClientTest {
                 "  \"MessageId\":\"8793c366c134477fb6499b061c7b638a\"," +
                 "  \"code\":\"002\"," +
                 "  \"message\":\"The message does not comply the schema definition\"," +
-                "  \"details\":\"Unrecognized field \\\"toto\\\" (class com.equensworldline.psu.v1.model.PsuCreateRequest), not marked as ignorable\"" +
+                "  \"details\":\"Unrecognized field \\\"toto\\\" (class com.sctequensworldline.psu.v1.model.PsuCreateRequest), not marked as ignorable\"" +
                 "}";
         builder.accept( HttpTestUtils.mockStringResponse( 400, "Bad Request", contentMatchingSpec ) );
 

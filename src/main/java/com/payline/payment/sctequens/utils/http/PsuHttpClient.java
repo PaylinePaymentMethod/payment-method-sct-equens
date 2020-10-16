@@ -23,9 +23,11 @@ public class PsuHttpClient extends EquensHttpClient {
     // --- Singleton Holder pattern + initialization BEGIN
     PsuHttpClient() {
     }
+
     private static class Holder {
         private static final PsuHttpClient instance = new PsuHttpClient();
     }
+
     public static PsuHttpClient getInstance() {
         return Holder.instance;
     }
@@ -39,33 +41,33 @@ public class PsuHttpClient extends EquensHttpClient {
     /**
      * Create a PSU.
      *
-     * @param psuCreateRequest The PSU creation request
+     * @param psuCreateRequest     The PSU creation request
      * @param requestConfiguration The request configuration
      * @return The API response, normally containing the created PSU data
      */
-    public Psu createPsu(PsuCreateRequest psuCreateRequest, RequestConfiguration requestConfiguration ){
+    public Psu createPsu(PsuCreateRequest psuCreateRequest, RequestConfiguration requestConfiguration) {
         // Service full URL
-        String url = this.getBaseUrl( requestConfiguration.getPartnerConfiguration() ) + this.getPath(API_PATH_PSU);
+        String url = this.getBaseUrl(requestConfiguration.getPartnerConfiguration()) + this.getPath(API_PATH_PSU);
 
         // Init. headers with Authorization (access token)
-        List<Header> headers = this.initHeaders( requestConfiguration );
+        List<Header> headers = this.initHeaders(requestConfiguration);
 
         // Misc headers
-        headers.add( new BasicHeader( HEADER_REQUEST_ID, UUID.randomUUID().toString() ) );
+        headers.add(new BasicHeader(HEADER_REQUEST_ID, UUID.randomUUID().toString()));
 
         // Body
-        StringEntity body = new StringEntity( psuCreateRequest.toString(), StandardCharsets.UTF_8 );
-        headers.add( new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json") );
+        StringEntity body = new StringEntity(jsonService.toJson(psuCreateRequest), StandardCharsets.UTF_8);
+        headers.add(new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"));
 
         // Send
-        StringResponse response = this.post( url, headers, body );
+        StringResponse response = this.post(url, headers, body);
 
         // Handle potential errors
-        if( !response.isSuccess() || response.getContent() == null ){
-            throw this.handleError( response );
+        if (!response.isSuccess() || response.getContent() == null) {
+            throw this.handleError(response);
         }
 
-        return PsuCreateResponse.fromJson( response.getContent() ).getPsu();
+        return jsonService.fromJson(response.getContent(), PsuCreateResponse.class).getPsu();
     }
 
 }

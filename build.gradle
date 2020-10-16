@@ -11,20 +11,12 @@ apply plugin: 'maven-publish'
 apply plugin: 'java-library'
 apply plugin: 'jacoco'
 
-description = 'payment-method-sct-equens'
-group = 'com.payline.payment.sct-equens'
-version = '1.0'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
 compileJava.options.encoding = 'UTF-8'
 
-ext {
-    paymentMethodApiVersion = '1.9'
-    paymentMethodIntegrationVersion = '1.4'
-}
 
 def externalFileName = "$projectDir/.external"
 if (file(externalFileName).exists()) {
@@ -34,17 +26,17 @@ if (file(externalFileName).exists()) {
 }
 
 dependencies {
-    compile group:'com.payline', name: 'payment-method-api', version: "$paymentMethodApiVersion"
+    compile group: 'com.payline', name: 'payment-method-api', version: paymentMethodApiVersion
 
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.3'
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
-    implementation group: 'org.tomitribe', name: 'tomitribe-http-signatures', version: '1.4'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4jsVersion
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4jsVersion
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: httpComponentVersion
+    implementation group: 'org.tomitribe', name: 'tomitribe-http-signatures', version: tomitribeVersion
+    implementation group: 'com.google.code.gson', name: 'gson', version: gsonVersion
 
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0-M1'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0-M1'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: jupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jupiterVersion
 }
 
 jar {
@@ -64,16 +56,15 @@ jar {
 assemble.dependsOn shadowJar
 
 shadowJar {
-    archiveClassifier.set("")
+    classifier = ''
     dependencies {
-        exclude(dependency('com.payline:payment-method-api'))
-        exclude(dependency('org.apache.logging.log4j:log4j-api:2.13.3'))
-        exclude(dependency('org.apache.logging.log4j:log4j-core:2.13.3'))
+        exclude(dependency("com.payline:payment-method-api"))
+        exclude(dependency("org.apache.logging.log4j:log4j-api:$log4jsVersion"))
+        exclude(dependency("org.apache.logging.log4j:log4j-core:$log4jsVersion"))
 
-        exclude(dependency('org.junit.jupiter:junit-jupiter-params'))
-        exclude(dependency('org.junit.jupiter:junit-jupiter-api'))
+        exclude(dependency("org.junit.jupiter:junit-jupiter-params"))
+        exclude(dependency("org.junit.jupiter:junit-jupiter-api"))
     }
-
 }
 
 processResources {
@@ -90,6 +81,12 @@ test {
     useJUnitPlatform()
     exclude('**/*IT.class')
 }
+
+dependencyCheck {
+    format 'ALL'
+    skipConfigurations = ['jacocoAgent', 'jacocoAnt', 'annotationProcessor', 'axisGenAntTask', 'jaxws', 'execJar', 'jaxb', 'generateSources']
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true

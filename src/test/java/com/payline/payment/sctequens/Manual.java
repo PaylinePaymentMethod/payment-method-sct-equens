@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * To run this manual test class, you need to send several system properties to the JVM :
@@ -66,7 +68,7 @@ public class Manual {
 
             // POST payment
 
-            PaymentInitiationRequest.PaymentInitiationRequestBuilder init = MockUtils.aPaymentInitiationRequestBuilder();
+            PaymentInitiationRequest.PaymentInitiationRequestBuilder init = MockUtils.aPaymentInitiationRequestBuilder(MockUtils.getIbanFR());
             //init.withPsuId( psuCreated.getPsuId() );
             init.withPsuId( null );
             PaymentInitiationResponse paymentInitiationResponse = pisHttpClient.initPayment( init.build(), requestConfiguration );
@@ -86,7 +88,7 @@ public class Manual {
     }
 
     private static ContractConfiguration initContractConfiguration(){
-        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration();
+        ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
         Map<String, ContractProperty> contractProperties = contractConfiguration.getContractProperties();
 
         contractProperties.put(Constants.ContractConfigurationKeys.MERCHANT_IBAN, new ContractProperty( System.getProperty("project.merchantIban") ));

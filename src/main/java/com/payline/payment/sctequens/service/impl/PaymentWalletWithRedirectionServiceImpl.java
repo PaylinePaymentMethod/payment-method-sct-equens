@@ -8,7 +8,7 @@ import com.payline.pmapi.bean.payment.request.WalletRedirectionPaymentRequest;
 import com.payline.pmapi.bean.payment.response.PaymentResponse;
 import com.payline.pmapi.service.PaymentWalletWithRedirectionService;
 
-public class PaymentWalletWithRedirectionServiceImpl extends AbstractRedirectionServiceImpl implements PaymentWalletWithRedirectionService {
+public class PaymentWalletWithRedirectionServiceImpl extends com.payline.payment.sctequens.service.impl.AbstractRedirectionServiceImpl implements PaymentWalletWithRedirectionService {
 
     @Override
     public PaymentResponse finalizeRedirectionPaymentWallet(final WalletRedirectionPaymentRequest redirectionPaymentRequest) {
