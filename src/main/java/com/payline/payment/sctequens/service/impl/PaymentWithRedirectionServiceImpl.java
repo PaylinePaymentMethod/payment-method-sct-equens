@@ -9,7 +9,7 @@ import com.payline.pmapi.bean.payment.request.TransactionStatusRequest;
 import com.payline.pmapi.bean.payment.response.PaymentResponse;
 import com.payline.pmapi.service.PaymentWithRedirectionService;
 
-public class PaymentWithRedirectionServiceImpl extends AbstractRedirectionServiceImpl implements PaymentWithRedirectionService {
+public class PaymentWithRedirectionServiceImpl extends com.payline.payment.sctequens.service.impl.AbstractRedirectionServiceImpl implements PaymentWithRedirectionService {
     
     @Override
     public PaymentResponse finalizeRedirectionPayment(RedirectionPaymentRequest redirectionPaymentRequest) {

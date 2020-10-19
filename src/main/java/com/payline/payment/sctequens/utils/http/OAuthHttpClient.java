@@ -6,6 +6,7 @@ import com.payline.payment.sctequens.bean.business.oauth.RFC6749AccessTokenSucce
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
+import com.payline.payment.sctequens.service.JsonService;
 import com.payline.payment.sctequens.utils.PluginUtils;
 import com.payline.payment.sctequens.utils.properties.ConfigProperties;
 import com.payline.pmapi.bean.common.FailureCause;
@@ -47,6 +48,7 @@ abstract class OAuthHttpClient {
     private static final Logger LOGGER = LogManager.getLogger(OAuthHttpClient.class);
 
     protected ConfigProperties config = ConfigProperties.getInstance();
+    protected JsonService jsonService = JsonService.getInstance();
 
     /**
      * Support for the current authorization information.
@@ -155,7 +157,7 @@ abstract class OAuthHttpClient {
         Authorization.AuthorizationBuilder authBuilder = new Authorization.AuthorizationBuilder();
         try {
             // parse response content
-            RFC6749AccessTokenSuccessResponse authResponse = RFC6749AccessTokenSuccessResponse.fromJson( response.getContent() );
+            RFC6749AccessTokenSuccessResponse authResponse = jsonService.fromJson(response.getContent(), RFC6749AccessTokenSuccessResponse.class);
 
             // retrieve access token & token type
             if( authResponse.getAccessToken() == null ){
@@ -181,8 +183,8 @@ abstract class OAuthHttpClient {
     }
 
     /**
-     * Build the request headers required to obtain an access token, which can vary from one Payment to another.
-     * This method should be overridden by children classes, specific to each Payment method.
+     * Build the request headers required to obtain an access token, which can vary from one Instant Payment to another.
+     * This method should be overridden by children classes, specific to each Instant Payment method.
      *
      * @param uri The request URI
      * @param requestConfiguration The request configuration
@@ -210,7 +212,7 @@ abstract class OAuthHttpClient {
     PluginException handleAuthorizationErrorResponse( StringResponse response ){
         RFC6749AccessTokenErrorResponse errorResponse;
         try {
-            errorResponse = RFC6749AccessTokenErrorResponse.fromJson( response.getContent() );
+            errorResponse = jsonService.fromJson(response.getContent(), RFC6749AccessTokenErrorResponse.class );
         }
         catch( JsonSyntaxException e ){
             errorResponse = null;

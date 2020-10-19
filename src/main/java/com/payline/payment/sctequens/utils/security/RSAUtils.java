@@ -49,7 +49,6 @@ public class RSAUtils {
         byte[] decodedKey = Base64.getDecoder().decode(key);
         // rebuild key using SecretKeySpec
         return new SecretKeySpec(decodedKey, ALGORITHM);
-
     }
 
 
