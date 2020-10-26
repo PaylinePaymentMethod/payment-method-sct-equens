@@ -4,6 +4,8 @@ import com.payline.payment.sctequens.bean.business.psu.Psu;
 import com.payline.payment.sctequens.bean.business.psu.PsuCreateRequest;
 import com.payline.payment.sctequens.bean.business.psu.PsuCreateResponse;
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
+import com.payline.payment.sctequens.exception.InvalidDataException;
+import com.payline.payment.sctequens.utils.Constants;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.StringEntity;
@@ -17,8 +19,6 @@ import java.util.UUID;
  * HTTP client in charge of requesting the PSU Management API.
  */
 public class PsuHttpClient extends EquensHttpClient {
-
-    private static final String API_PATH_PSU = "api.psu.psus";
 
     // --- Singleton Holder pattern + initialization BEGIN
     PsuHttpClient() {
@@ -47,8 +47,10 @@ public class PsuHttpClient extends EquensHttpClient {
      */
     public Psu createPsu(PsuCreateRequest psuCreateRequest, RequestConfiguration requestConfiguration) {
         // Service full URL
-        String url = this.getBaseUrl(requestConfiguration.getPartnerConfiguration()) + this.getPath(API_PATH_PSU);
-
+        String url = requestConfiguration.getPartnerConfiguration().getProperty(Constants.PartnerConfigurationKeys.API_URL_PSU_PSUS);
+        if (url == null) {
+            throw new InvalidDataException("Missing API psus url in PartnerConfiguration");
+        }
         // Init. headers with Authorization (access token)
         List<Header> headers = this.initHeaders(requestConfiguration);
 

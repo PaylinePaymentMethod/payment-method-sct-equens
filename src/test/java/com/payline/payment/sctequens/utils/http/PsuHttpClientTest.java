@@ -7,6 +7,7 @@ import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
 import com.payline.payment.sctequens.utils.properties.ConfigProperties;
+import com.payline.pmapi.bean.configuration.PartnerConfiguration;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -27,15 +30,12 @@ class PsuHttpClientTest {
     @InjectMocks
     private PsuHttpClient psuHttpClient = new PsuHttpClient();
 
-    @Mock private ConfigProperties config;
 
     @BeforeEach
     void setup(){
         MockitoAnnotations.initMocks(this);
         // Mock a valid authorization
         doReturn( MockUtils.anAuthorization() ).when( psuHttpClient ).authorize( any(RequestConfiguration.class) );
-        // Mock the config properties
-        doReturn( "/psumgmt/v1/psus" ).when( config ).get( "api.psu.psus" );
     }
 
     @AfterEach
@@ -75,11 +75,13 @@ class PsuHttpClientTest {
     @Test
     void createPsu_invalidConfig(){
         // given: the config property containing the path is missing
-        doReturn( null ).when( config ).get( "api.psu.psus" );
+        PartnerConfiguration partnerConfiguration;
+        partnerConfiguration = new PartnerConfiguration(new HashMap<>(), new HashMap<>());
+        RequestConfiguration requestConfiguration = new RequestConfiguration(MockUtils.aContractConfiguration("FR"), MockUtils.anEnvironment(), partnerConfiguration);
+
 
         // when: calling the method, then: an exception is thrown
         PsuCreateRequest request = MockUtils.aPsuCreateRequest();
-        RequestConfiguration requestConfiguration = MockUtils.aRequestConfiguration();
         assertThrows( InvalidDataException.class, () -> psuHttpClient.createPsu( request , requestConfiguration ) );
     }
 
