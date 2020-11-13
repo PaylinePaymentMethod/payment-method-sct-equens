@@ -7,6 +7,7 @@ import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
 import com.payline.payment.sctequens.utils.properties.ConfigProperties;
+import com.payline.pmapi.bean.common.FailureCause;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.jupiter.api.AfterEach;
@@ -120,8 +121,10 @@ class PsuHttpClientTest {
         RequestConfiguration requestConfiguration = MockUtils.aRequestConfiguration();
         PluginException thrown = assertThrows(PluginException.class,
                 () -> psuHttpClient.createPsu( request, requestConfiguration ) );
-        assertNotNull(  thrown.getErrorCode() );
-        assertNotNull(  thrown.getFailureCause() );
+
+        assertEquals("Property messageId : must not be null", thrown.getErrorCode());
+        assertEquals(FailureCause.INVALID_DATA, thrown.getFailureCause());
+
     }
 
 }
