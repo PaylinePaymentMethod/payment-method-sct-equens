@@ -123,7 +123,7 @@ public class PisHttpClient extends EquensHttpClient {
         }
         url = url.replace("{paymentId}", paymentId);
         if (autoConfirm) {
-            url += "?confirm=true";
+            url = addStringUrlParameter(url, "confirm=true");
         }
 
         // Send request
@@ -141,5 +141,22 @@ public class PisHttpClient extends EquensHttpClient {
             throw new InvalidDataException(response.getContent());
         }
     }
+    /**
+     * Add a parameter to a string URL
+     * @param url The url on which the parameter will be added
+     * @param parameter The parameter to be added
+     * @return String URL with the new parameter
+     */
+    public String addStringUrlParameter(String url, String parameter){
+        StringBuilder urlWithNewParameter = new StringBuilder(url);
+        String characterBeforeParameter= "?";
 
+        // Check if the url string already contain parameters
+        if(url.contains("?")){
+            characterBeforeParameter = "&";
+        }
+        urlWithNewParameter.append(characterBeforeParameter).append(parameter);
+
+        return urlWithNewParameter.toString();
+    }
 }
