@@ -129,7 +129,7 @@ public class PaymentFormConfigurationServiceImpl extends LogoPaymentFormConfigur
 
 
     /**
-     * Check if a bank is compatible with the Instant paymentMode
+     * Check if a bank is compatible with the Normal paymentMode
      * see PAYLAPMEXT-294
      *
      * @param details
