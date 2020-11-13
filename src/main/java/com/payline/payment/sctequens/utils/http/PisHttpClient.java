@@ -118,7 +118,7 @@ public class PisHttpClient extends EquensHttpClient {
         String url = this.getBaseUrl(requestConfiguration.getPartnerConfiguration())
                 + this.getPath(API_PATH_PAYMENTS_STATUS).replace("{paymentId}", paymentId);
         if (autoConfirm) {
-            url = addStringUrlParameter(url, "confirm=true");
+            url += "?confirm=true";
         }
 
         // Send request
@@ -137,22 +137,4 @@ public class PisHttpClient extends EquensHttpClient {
         }
     }
 
-    /**
-     * Add a parameter to a string URL
-     * @param url The url on which the parameter will be added
-     * @param parameter The parameter to be added
-     * @return String URL with the new parameter
-     */
-    public String addStringUrlParameter(String url, String parameter){
-        StringBuilder urlWithNewParameter = new StringBuilder(url);
-        String characterBeforeParameter= "?";
-
-        // Check if the url string already contain parameters
-        if(url.contains("?")){
-            characterBeforeParameter = "&";
-        }
-        urlWithNewParameter.append(characterBeforeParameter).append(parameter);
-
-        return urlWithNewParameter.toString();
-    }
 }
