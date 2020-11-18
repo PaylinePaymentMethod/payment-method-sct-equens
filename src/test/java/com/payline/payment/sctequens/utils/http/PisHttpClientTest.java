@@ -8,8 +8,8 @@ import com.payline.payment.sctequens.bean.business.reachdirectory.GetAspspsRespo
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
-import com.payline.payment.sctequens.utils.properties.ConfigProperties;
 import com.payline.pmapi.bean.common.FailureCause;
+import com.payline.pmapi.bean.configuration.PartnerConfiguration;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,21 +33,14 @@ class PisHttpClientTest {
     @InjectMocks
     private PisHttpClient pisHttpClient = new PisHttpClient();
 
-    @Mock
-    private ConfigProperties config;
-
     private String paymentId = MockUtils.aPaymentId();
-    private RequestConfiguration requestConfiguration = MockUtils.aRequestConfiguration();
+    private RequestConfiguration goodRequestConfiguration = MockUtils.aRequestConfiguration();
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
         // Mock a valid authorization
         doReturn(MockUtils.anAuthorization()).when(pisHttpClient).authorize(any(RequestConfiguration.class));
-        // Mock the config properties
-        doReturn("/directory/v1/aspsps").when(config).get("api.pis.aspsps");
-        doReturn("/pis/v1/payments").when(config).get("api.pis.payments");
-        doReturn("/pis/v1/payments/{paymentId}/status").when(config).get("api.pis.payments.status");
     }
 
     @AfterEach
@@ -74,13 +68,13 @@ class PisHttpClientTest {
                 "      \"BIC\":\"TODO\"}" +
                 "  ]" +
                 "}";
-        String goodUrl = "https://xs2a.awltest.de/xs2a/routingservice/services/directory/v1/aspsps";
+        String goodUrl = "https://xs2a.awltest.de/xs2a/routingservice/services/directory/v1/aspsps?allDetails=true";
         doReturn(HttpTestUtils.mockStringResponse(200, "OK", responseBody))
                 .when(pisHttpClient)
                 .get(anyString(), anyList());
 
         // when: calling the method
-        GetAspspsResponse response = pisHttpClient.getAspsps(MockUtils.aRequestConfiguration());
+        GetAspspsResponse response = pisHttpClient.getAspsps(goodRequestConfiguration);
         Mockito.verify(pisHttpClient, atLeastOnce()).get(eq(goodUrl), any());
 
         // then: the list contains 1 Aspsp
@@ -91,7 +85,8 @@ class PisHttpClientTest {
     @Test
     void getAspsps_invalidConfig() {
         // given: the config property containing the path is missing
-        doReturn(null).when(config).get("api.pis.aspsps");
+        PartnerConfiguration partnerConfiguration = new PartnerConfiguration(new HashMap<>(), new HashMap<>());
+        RequestConfiguration requestConfiguration = new RequestConfiguration(MockUtils.aContractConfiguration("FR"), MockUtils.anEnvironment(), partnerConfiguration);
 
         // when: calling the method, then: an exception is thrown
         assertThrows(InvalidDataException.class, () -> pisHttpClient.getAspsps(requestConfiguration));
@@ -110,7 +105,7 @@ class PisHttpClientTest {
                 .get(anyString(), anyList());
 
         // when: calling the method
-        GetAspspsResponse response = pisHttpClient.getAspsps(MockUtils.aRequestConfiguration());
+        GetAspspsResponse response = pisHttpClient.getAspsps(goodRequestConfiguration);
 
         // then: resulting list is null
         assertNull(response.getAspsps());
@@ -124,7 +119,7 @@ class PisHttpClientTest {
                 .get(anyString(), anyList());
 
         // when: calling the method, then: an exception is thrown
-        assertThrows(PluginException.class, () -> pisHttpClient.getAspsps(requestConfiguration));
+        assertThrows(PluginException.class, () -> pisHttpClient.getAspsps(goodRequestConfiguration));
     }
 
     @Test
@@ -137,8 +132,8 @@ class PisHttpClientTest {
                 .get(anyString(), anyList());
 
         // when: calling the method, then: an exception is thrown
-        PluginException e = assertThrows(PluginException.class, () -> pisHttpClient.getAspsps(requestConfiguration));
-        Assertions.assertEquals(error.substring(0,50), e.getErrorCode());
+        PluginException e = assertThrows(PluginException.class, () -> pisHttpClient.getAspsps(goodRequestConfiguration));
+        Assertions.assertEquals(error.substring(0, 50), e.getErrorCode());
     }
 
     // --- Test PisHttpClient#initPayment ---
@@ -160,7 +155,7 @@ class PisHttpClientTest {
                 .post(anyString(), anyList(), any(HttpEntity.class));
 
         // when: initializing a payment
-        PaymentInitiationResponse response = pisHttpClient.initPayment(MockUtils.aPaymentInitiationRequest(MockUtils.getIbanFR()), MockUtils.aRequestConfiguration());
+        PaymentInitiationResponse response = pisHttpClient.initPayment(MockUtils.aPaymentInitiationRequest(MockUtils.getIbanFR()), goodRequestConfiguration);
 
         // then: the response contains the redirection URL
         assertNotNull(response);
@@ -177,11 +172,12 @@ class PisHttpClientTest {
     @Test
     void initPayment_invalidConfig() {
         // given: the config property containing the path is missing
-        doReturn(null).when(config).get(anyString());
+        PartnerConfiguration partnerConfiguration = new PartnerConfiguration(new HashMap<>(), new HashMap<>());
+        RequestConfiguration requestConfiguration = new RequestConfiguration(MockUtils.aContractConfiguration("FR"), MockUtils.anEnvironment(), partnerConfiguration);
 
         // when: calling the method, then: an exception is thrown
         PaymentInitiationRequest request = MockUtils.aPaymentInitiationRequest(MockUtils.getIbanFR());
-        assertThrows(InvalidDataException.class, () -> pisHttpClient.initPayment( request, requestConfiguration));
+        assertThrows(InvalidDataException.class, () -> pisHttpClient.initPayment(request, requestConfiguration));
     }
 
     @Test
@@ -200,7 +196,7 @@ class PisHttpClientTest {
 
         // when: initializing a payment, then: an exception is thrown
         PaymentInitiationRequest request = MockUtils.aPaymentInitiationRequest(MockUtils.getIbanFR());
-        PluginException thrown = assertThrows(PluginException.class, () -> pisHttpClient.initPayment(request, requestConfiguration));
+        PluginException thrown = assertThrows(PluginException.class, () -> pisHttpClient.initPayment(request, goodRequestConfiguration));
         Assertions.assertNotNull(thrown.getErrorCode());
         Assertions.assertEquals("Property paymentAmount : must not be null", thrown.getErrorCode());
         Assertions.assertNotNull(thrown.getFailureCause());
@@ -228,7 +224,7 @@ class PisHttpClientTest {
                 .get(anyString(), anyList());
 
         // when: retrieving the payment status
-        PaymentStatusResponse response = pisHttpClient.paymentStatus(paymentId, MockUtils.aRequestConfiguration(), false);
+        PaymentStatusResponse response = pisHttpClient.paymentStatus(paymentId, goodRequestConfiguration, false);
 
         // then: the response contains the status
         assertNotNull(response);
@@ -245,7 +241,8 @@ class PisHttpClientTest {
     @Test
     void paymentStatus_invalidConfig() {
         // given: the config property containing the path is missing
-        doReturn(null).when(config).get(anyString());
+        PartnerConfiguration partnerConfiguration = new PartnerConfiguration(new HashMap<>(), new HashMap<>());
+        RequestConfiguration requestConfiguration = new RequestConfiguration(MockUtils.aContractConfiguration("FR"), MockUtils.anEnvironment(), partnerConfiguration);
 
         // when: calling the method, then: an exception is thrown
         assertThrows(InvalidDataException.class, () -> pisHttpClient.paymentStatus(paymentId, requestConfiguration, false));
@@ -267,7 +264,7 @@ class PisHttpClientTest {
 
         // when: retrieving the payment status, then: an exception is thrown
         PluginException thrown = assertThrows(PluginException.class,
-                () -> pisHttpClient.paymentStatus("666", requestConfiguration, false));
+                () -> pisHttpClient.paymentStatus("666", goodRequestConfiguration, false));
         Assertions.assertNotNull(thrown.getErrorCode());
         Assertions.assertEquals("Transaction could not be found", thrown.getErrorCode());
         Assertions.assertNotNull(thrown.getFailureCause());
@@ -283,6 +280,21 @@ class PisHttpClientTest {
             }
         }
         assertTrue(headerPresent);
+    }
+
+    @Test
+    void check_addStringUrlParameter(){
+
+        String url = "https://xs2a.awltest.de/xs2a/routingservice/services/pis/v1/payments/{paymentId}/status";
+
+        url = url.replace("{paymentId}", paymentId);
+        url = pisHttpClient.addStringUrlParameter(url, "Param=value");
+
+        assertTrue(url.contains("?") && !url.contains("&"));
+
+        url = pisHttpClient.addStringUrlParameter(url, "confirm=true");
+
+        assertTrue(url.contains("?") && url.contains("&"));
     }
 
 }
