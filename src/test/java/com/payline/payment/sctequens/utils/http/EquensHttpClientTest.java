@@ -4,9 +4,8 @@ import com.payline.payment.sctequens.MockUtils;
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
-import com.payline.payment.sctequens.utils.Constants;
+import com.payline.payment.sctequens.utils.constant.ContractConfigurationKeys;
 import com.payline.payment.sctequens.utils.security.RSAHolder;
-import com.payline.pmapi.bean.configuration.PartnerConfiguration;
 import com.payline.pmapi.bean.payment.ContractConfiguration;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +76,7 @@ class EquensHttpClientTest {
         // given: client name is missing from ContractConfiguration
         String uri = "http://test.domain.fr/path";
         ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
-        contractConfiguration.getContractProperties().remove(Constants.ContractConfigurationKeys.CLIENT_NAME);
+        contractConfiguration.getContractProperties().remove(ContractConfigurationKeys.CLIENT_NAME);
         RequestConfiguration requestConfiguration = new RequestConfiguration(contractConfiguration, MockUtils.anEnvironment(), MockUtils.aPartnerConfiguration());
 
         // when: calling authorizationHeaders(), then: an exception is thrown
@@ -90,7 +88,7 @@ class EquensHttpClientTest {
         // given: onboarding id is missing from ContractConfiguration
         String uri = "http://test.domain.fr/path";
         ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
-        contractConfiguration.getContractProperties().remove(Constants.ContractConfigurationKeys.ONBOARDING_ID);
+        contractConfiguration.getContractProperties().remove(ContractConfigurationKeys.ONBOARDING_ID);
         RequestConfiguration requestConfiguration = new RequestConfiguration(contractConfiguration, MockUtils.anEnvironment(), MockUtils.aPartnerConfiguration());
 
         // when: calling authorizationHeaders(), then: an exception is thrown

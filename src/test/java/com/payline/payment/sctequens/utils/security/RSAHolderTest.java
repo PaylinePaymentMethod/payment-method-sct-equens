@@ -1,7 +1,7 @@
 package com.payline.payment.sctequens.utils.security;
 
 import com.payline.payment.sctequens.MockUtils;
-import com.payline.payment.sctequens.utils.Constants;
+import com.payline.payment.sctequens.utils.constant.PartnerConfigurationKeys;
 import com.payline.pmapi.bean.configuration.PartnerConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ class RSAHolderTest {
     void setup() {
         builder = new RSAHolder.RSAHolderBuilder();
         PartnerConfiguration partnerConfiguration = MockUtils.aPartnerConfiguration();
-        pemCertificate = partnerConfiguration.getProperty(Constants.PartnerConfigurationKeys.CLIENT_CERTIFICATE);
-        pemPk = partnerConfiguration.getProperty(Constants.PartnerConfigurationKeys.CLIENT_PRIVATE_KEY);
+        pemCertificate = partnerConfiguration.getProperty(PartnerConfigurationKeys.CLIENT_CERTIFICATE);
+        pemPk = partnerConfiguration.getProperty(PartnerConfigurationKeys.CLIENT_PRIVATE_KEY);
     }
 
     @Test

@@ -7,7 +7,7 @@ public class Detail {
     @SerializedName("Api")
     private String api;
 
-    @SerializedName("FieldName")
+    @SerializedName("Fieldname")
     private String fieldName;
 
     @SerializedName("Type")
@@ -22,7 +22,7 @@ public class Detail {
     public Detail() {
     }
 
-    public Detail(String api, String fieldName,String type, String value, String protocolVersion) {
+    public Detail(String api, String fieldName, String type, String value, String protocolVersion) {
         this.api = api;
         this.fieldName = fieldName;
         this.type = type;
@@ -44,5 +44,9 @@ public class Detail {
 
     public String getProtocolVersion() {
         return protocolVersion;
+    }
+
+    public String getType() {
+        return type;
     }
 }
