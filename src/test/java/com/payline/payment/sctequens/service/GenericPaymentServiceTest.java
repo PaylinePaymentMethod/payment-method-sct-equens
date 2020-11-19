@@ -99,7 +99,7 @@ class GenericPaymentServiceTest {
 
         String chaine = jsonService.toJson(request);
 
-        assertTrue(!chaine.contains("CreditorName"));
+        assertFalse(chaine.contains("CreditorName"));
 
     }
 
@@ -132,7 +132,7 @@ class GenericPaymentServiceTest {
 
         String chaine = jsonService.toJson(request);
 
-        assertTrue(!chaine.contains("CreditorAccount"));
+        assertFalse(chaine.contains("CreditorAccount"));
 
     }
 
