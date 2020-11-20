@@ -14,7 +14,6 @@ import com.payline.pmapi.bean.common.FailureCause;
 import com.payline.pmapi.bean.paymentform.bean.field.PaymentFormField;
 import com.payline.pmapi.bean.paymentform.bean.field.PaymentFormInputFieldSelect;
 import com.payline.pmapi.bean.paymentform.bean.field.SelectOption;
-import com.payline.pmapi.bean.paymentform.bean.form.BankTransferForm;
 import com.payline.pmapi.bean.paymentform.bean.form.CustomForm;
 import com.payline.pmapi.bean.paymentform.request.PaymentFormConfigurationRequest;
 import com.payline.pmapi.bean.paymentform.response.configuration.PaymentFormConfigurationResponse;
@@ -55,10 +54,6 @@ public class PaymentFormConfigurationServiceImpl extends LogoPaymentFormConfigur
             List<PaymentFormField> customFields = new ArrayList<>();
             listCountryCode = PluginUtils.createListCountry(countries);
 
-
-
-            List<SelectOption> banks = this.getBanks(paymentFormConfigurationRequest.getPluginConfiguration(), listCountryCode);
-
             // Build the payment form
             PaymentFormInputFieldSelect inputFieldSelect = PaymentFormInputFieldSelect.PaymentFormFieldSelectBuilder
                     .aPaymentFormInputFieldSelect()
@@ -78,7 +73,6 @@ public class PaymentFormConfigurationServiceImpl extends LogoPaymentFormConfigur
                     .withButtonText(i18n.getMessage("paymentForm.bank.buttonText", locale))
                     .withDescription(i18n.getMessage("paymentForm.bank.description", locale))
                     .build();
-
 
             pfcResponse = PaymentFormConfigurationResponseSpecific.PaymentFormConfigurationResponseSpecificBuilder
                     .aPaymentFormConfigurationResponseSpecific()
