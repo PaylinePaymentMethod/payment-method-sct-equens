@@ -92,10 +92,10 @@ class GenericPaymentServiceTest {
         );
 
         // Create a new PSU
-        Psu newPsu = psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
+        psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
 
         // Build PaymentInitiationRequest (Equens) from PaymentRequest (Payline)
-        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, newPsu, paymentData);
+        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData);
 
         String chaine = jsonService.toJson(request);
 
@@ -125,10 +125,10 @@ class GenericPaymentServiceTest {
         );
 
         // Create a new PSU
-        Psu newPsu = psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
+        psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
 
         // Build PaymentInitiationRequest (Equens) from PaymentRequest (Payline)
-        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, newPsu, paymentData);
+        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData);
 
         String chaine = jsonService.toJson(request);
 
@@ -155,10 +155,10 @@ class GenericPaymentServiceTest {
         );
 
         // Create a new PSU
-        Psu newPsu = psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
+        psuHttpclient.createPsu(new PsuCreateRequest.PsuCreateRequestBuilder().build(), requestConfiguration);
 
         // Build PaymentInitiationRequest (Equens) from PaymentRequest (Payline)
-        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, newPsu, paymentData);
+        PaymentInitiationRequest request = service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData);
 
         String chaine = jsonService.toJson(request);
 
@@ -305,11 +305,10 @@ class GenericPaymentServiceTest {
 
     @Test
     void buildPaymentInitiationRequest() {
-        Psu psu = MockUtils.aPsu();
         PaymentData paymentData = MockUtils.aPaymentdata();
         GenericPaymentRequest genericPaymentRequest = new GenericPaymentRequest(MockUtils.aPaylinePaymentRequest());
 
-        PaymentInitiationRequest paymentInitiationRequest = service.buildPaymentInitiationRequest(genericPaymentRequest, psu, paymentData);
+        PaymentInitiationRequest paymentInitiationRequest = service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData);
         String ibanFR = MockUtils.getIbanFR();
         PaymentInitiationRequest request = MockUtils.aPaymentInitiationRequest(ibanFR);
         Assertions.assertEquals(request.getAspspId(), paymentInitiationRequest.getAspspId());
@@ -324,7 +323,7 @@ class GenericPaymentServiceTest {
         Assertions.assertEquals(request.getPaymentCurrency(), paymentInitiationRequest.getPaymentCurrency());
         Assertions.assertEquals(request.getPaymentProduct(), paymentInitiationRequest.getPaymentProduct());
         Assertions.assertEquals(request.getPreferredScaMethod(), paymentInitiationRequest.getPreferredScaMethod());
-        Assertions.assertEquals(request.getPsuId(), paymentInitiationRequest.getPsuId());
+        Assertions.assertEquals(genericPaymentRequest.getBuyer().getCustomerIdentifier(), paymentInitiationRequest.getPsuId());
         Assertions.assertEquals(request.getPsuSessionInformation().getHeaderUserAgent(), paymentInitiationRequest.getPsuSessionInformation().getHeaderUserAgent());
         Assertions.assertEquals(request.getPsuSessionInformation().getIpAddress(), paymentInitiationRequest.getPsuSessionInformation().getIpAddress());
         Assertions.assertEquals(request.getPurposeCode(), paymentInitiationRequest.getPurposeCode());
@@ -338,7 +337,6 @@ class GenericPaymentServiceTest {
 
     @Test
     void buildPaymentInitiationRequest_EmptyIBANForSpain() {
-        Psu psu = MockUtils.aPsu();
         PaymentData paymentData = MockUtils.aPaymentDataBuilder()
                 .withIban("")
                 .build();
@@ -348,7 +346,7 @@ class GenericPaymentServiceTest {
                         .build());
 
         Assertions.assertThrows(InvalidDataException.class,
-                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, psu, paymentData),
+                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData),
                 "IBAN is required for Spain"
         );
     }
@@ -367,14 +365,13 @@ class GenericPaymentServiceTest {
                         .build());
 
         Assertions.assertThrows(InvalidDataException.class,
-                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, psu, paymentData),
+                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData),
                 "IBAN should be from a country available by the merchant "
         );
     }
 
     @Test
     void buildPaymentInitiationRequest_WrongCountryIBAN() {
-        Psu psu = MockUtils.aPsu();
         PaymentData paymentData = MockUtils.aPaymentDataBuilder()
                 .withIban(MockUtils.getIbanES())
                 .build();
@@ -384,7 +381,7 @@ class GenericPaymentServiceTest {
                         .build());
 
         Assertions.assertThrows(InvalidDataException.class,
-                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, psu, paymentData),
+                () -> service.buildPaymentInitiationRequest(genericPaymentRequest, paymentData),
                 "IBAN should be from a country available by the merchant "
         );
     }
