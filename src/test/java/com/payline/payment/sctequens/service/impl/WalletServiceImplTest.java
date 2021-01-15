@@ -75,7 +75,7 @@ class WalletServiceImplTest {
                 .build();
         WalletCreateRequest request = WalletCreateRequest.builder()
                 .paymentFormContext(context)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
         WalletCreateResponse response = service.createWallet(request);
 
@@ -101,7 +101,7 @@ class WalletServiceImplTest {
                 .build();
         WalletCreateRequest request = WalletCreateRequest.builder()
                 .paymentFormContext(context)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
         WalletCreateResponse response = service.createWallet(request);
 
@@ -127,7 +127,7 @@ class WalletServiceImplTest {
                 .build();
         WalletCreateRequest request = WalletCreateRequest.builder()
                 .paymentFormContext(context)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
         WalletCreateResponse response = service.createWallet(request);
 
@@ -152,7 +152,7 @@ class WalletServiceImplTest {
                 .build();
         WalletCreateRequest request = WalletCreateRequest.builder()
                 .paymentFormContext(context)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
         WalletCreateResponse response = service.createWallet(request);
 
@@ -173,7 +173,6 @@ class WalletServiceImplTest {
                 .build();
         WalletCreateRequest request = WalletCreateRequest.builder()
                 .paymentFormContext(context)
-                .pluginConfiguration("")
                 .build();
         WalletCreateResponse response = service.createWallet(request);
 
@@ -191,7 +190,7 @@ class WalletServiceImplTest {
 
         WalletDisplayRequest request = WalletDisplayRequest.builder()
                 .wallet(wallet)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
 
         WalletDisplay response = (WalletDisplay) service.displayWallet(request);
@@ -212,7 +211,7 @@ class WalletServiceImplTest {
 
         WalletDisplayRequest request = WalletDisplayRequest.builder()
                 .wallet(wallet)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
 
         WalletDisplay response = (WalletDisplay) service.displayWallet(request);
@@ -232,7 +231,7 @@ class WalletServiceImplTest {
 
         WalletDisplayRequest request = WalletDisplayRequest.builder()
                 .wallet(wallet)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
 
         WalletDisplay response = (WalletDisplay) service.displayWallet(request);
@@ -251,7 +250,7 @@ class WalletServiceImplTest {
 
         WalletDisplayRequest request = WalletDisplayRequest.builder()
                 .wallet(wallet)
-                .pluginConfiguration(MockUtils.aPluginConfiguration())
+                .partnerConfiguration(MockUtils.aPartnerConfiguration())
                 .build();
 
         WalletDisplay response = (WalletDisplay) service.displayWallet(request);

@@ -244,17 +244,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             GetAspspsResponse apspsps = pisHttpClient.getAspsps(requestConfiguration);
 
             // Serialize the list (as JSON)
-            String banks = jsonService.toJson(apspsps);
-
-            // get oldKey or generate first key
-            String key;
-            if (PluginUtils.isEmpty(retrievePluginConfigurationRequest.getPluginConfiguration())) {
-                key = rsaUtils.generateKey();
-            } else {
-                key = PluginUtils.extractKey(retrievePluginConfigurationRequest.getPluginConfiguration());
-            }
-
-            return banks + PluginUtils.SEPARATOR + key;
+            return jsonService.toJson(apspsps);
         } catch (RuntimeException e) {
             LOGGER.error("Could not retrieve plugin configuration due to a plugin error", e);
             return retrievePluginConfigurationRequest.getPluginConfiguration();
