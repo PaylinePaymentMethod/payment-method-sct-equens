@@ -9,7 +9,8 @@ import com.payline.payment.sctequens.bean.business.reachdirectory.GetAspspsRespo
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.PluginException;
 import com.payline.payment.sctequens.service.impl.ConfigurationServiceImpl;
-import com.payline.payment.sctequens.utils.Constants;
+import com.payline.payment.sctequens.utils.constant.ContractConfigurationKeys;
+import com.payline.payment.sctequens.utils.constant.PartnerConfigurationKeys;
 import com.payline.payment.sctequens.utils.http.PisHttpClient;
 import com.payline.payment.sctequens.utils.http.PsuHttpClient;
 import com.payline.pmapi.bean.configuration.PartnerConfiguration;
@@ -91,25 +92,25 @@ public class Manual {
         ContractConfiguration contractConfiguration = MockUtils.aContractConfiguration(MockUtils.getExampleCountry());
         Map<String, ContractProperty> contractProperties = contractConfiguration.getContractProperties();
 
-        contractProperties.put(Constants.ContractConfigurationKeys.MERCHANT_IBAN, new ContractProperty( System.getProperty("project.merchantIban") ));
-        contractProperties.put(Constants.ContractConfigurationKeys.ONBOARDING_ID, new ContractProperty( System.getProperty("project.onboardingId") ));
+        contractProperties.put(ContractConfigurationKeys.MERCHANT_IBAN, new ContractProperty( System.getProperty("project.merchantIban") ));
+        contractProperties.put(ContractConfigurationKeys.ONBOARDING_ID, new ContractProperty( System.getProperty("project.onboardingId") ));
 
         return contractConfiguration;
     }
 
     private static PartnerConfiguration initPartnerConfiguration() throws IOException {
         Map<String, String> partnerConfigurationMap = new HashMap<>();
-        partnerConfigurationMap.put(Constants.PartnerConfigurationKeys.API_URL_TOKEN, "https://xs2a.awltest.de/xs2a/routingservice/services/authorize/token");
-        partnerConfigurationMap.put(Constants.PartnerConfigurationKeys.API_URL_PIS_ASPSPS, "https://xs2a.awltest.de/xs2a/routingservice/services/directory/v1/aspsps?allDetails=true");
-        partnerConfigurationMap.put(Constants.PartnerConfigurationKeys.API_URL_PIS_PAYMENTS, "https://xs2a.awltest.de/xs2a/routingservice/services/pis/v1/payments");
-        partnerConfigurationMap.put(Constants.PartnerConfigurationKeys.API_URL_PIS_PAYMENTS_STATUS, "https://xs2a.awltest.de/xs2a/routingservice/services/pis/v1/payments/{paymentId}/status");
-        partnerConfigurationMap.put(Constants.PartnerConfigurationKeys.API_URL_PSU_PSUS, "https://xs2a.awltest.de/xs2a/routingservice/services/psumgmt/v1/psus");
-        partnerConfigurationMap.put( Constants.PartnerConfigurationKeys.PAYLINE_CLIENT_NAME, "MarketPay" );        //partnerConfigurationMap.put( Constants.PartnerConfigurationKeys.PAYLINE_ONBOARDING_ID, System.getProperty("project.onboardingId") );
-        partnerConfigurationMap.put( Constants.PartnerConfigurationKeys.PAYMENT_PRODUCT, "Normal" );
+        partnerConfigurationMap.put(PartnerConfigurationKeys.API_URL_TOKEN, "https://xs2a.awltest.de/xs2a/routingservice/services/authorize/token");
+        partnerConfigurationMap.put(PartnerConfigurationKeys.API_URL_PIS_ASPSPS, "https://xs2a.awltest.de/xs2a/routingservice/services/directory/v1/aspsps?allDetails=true");
+        partnerConfigurationMap.put(PartnerConfigurationKeys.API_URL_PIS_PAYMENTS, "https://xs2a.awltest.de/xs2a/routingservice/services/pis/v1/payments");
+        partnerConfigurationMap.put(PartnerConfigurationKeys.API_URL_PIS_PAYMENTS_STATUS, "https://xs2a.awltest.de/xs2a/routingservice/services/pis/v1/payments/{paymentId}/status");
+        partnerConfigurationMap.put(PartnerConfigurationKeys.API_URL_PSU_PSUS, "https://xs2a.awltest.de/xs2a/routingservice/services/psumgmt/v1/psus");
+        partnerConfigurationMap.put( PartnerConfigurationKeys.PAYLINE_CLIENT_NAME, "MarketPay" );        //partnerConfigurationMap.put( Constants.PartnerConfigurationKeys.PAYLINE_ONBOARDING_ID, System.getProperty("project.onboardingId") );
+        partnerConfigurationMap.put( PartnerConfigurationKeys.PAYMENT_PRODUCT, "Normal" );
 
         Map<String, String> sensitiveConfigurationMap = new HashMap<>();
-        sensitiveConfigurationMap.put( Constants.PartnerConfigurationKeys.CLIENT_CERTIFICATE, new String(Files.readAllBytes(Paths.get(System.getProperty("project.certificateChainPath")))) );
-        sensitiveConfigurationMap.put( Constants.PartnerConfigurationKeys.CLIENT_PRIVATE_KEY, new String(Files.readAllBytes(Paths.get(System.getProperty("project.pkPath")))) );
+        sensitiveConfigurationMap.put( PartnerConfigurationKeys.CLIENT_CERTIFICATE, new String(Files.readAllBytes(Paths.get(System.getProperty("project.certificateChainPath")))) );
+        sensitiveConfigurationMap.put( PartnerConfigurationKeys.CLIENT_PRIVATE_KEY, new String(Files.readAllBytes(Paths.get(System.getProperty("project.pkPath")))) );
 
         return new PartnerConfiguration( partnerConfigurationMap, sensitiveConfigurationMap );
     }

@@ -7,11 +7,13 @@ import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
 import com.payline.payment.sctequens.service.JsonService;
 import com.payline.payment.sctequens.service.LogoPaymentFormConfigurationService;
-import com.payline.payment.sctequens.utils.Constants;
 import com.payline.payment.sctequens.utils.PluginUtils;
+import com.payline.payment.sctequens.utils.constant.ContractConfigurationKeys;
+import com.payline.payment.sctequens.utils.constant.RequestContextKeys;
 import com.payline.pmapi.bean.common.FailureCause;
+import com.payline.pmapi.bean.paymentform.bean.field.PaymentFormField;
+import com.payline.pmapi.bean.paymentform.bean.field.PaymentFormInputFieldSelect;
 import com.payline.pmapi.bean.paymentform.bean.field.SelectOption;
-import com.payline.pmapi.bean.paymentform.bean.form.BankTransferForm;
 import com.payline.pmapi.bean.paymentform.bean.form.CustomForm;
 import com.payline.pmapi.bean.paymentform.request.PaymentFormConfigurationRequest;
 import com.payline.pmapi.bean.paymentform.response.configuration.PaymentFormConfigurationResponse;
@@ -44,22 +46,32 @@ public class PaymentFormConfigurationServiceImpl extends LogoPaymentFormConfigur
                 throw new InvalidDataException("Plugin configuration must not be null");
             }
             // check if the string who contain the list of country is empty
-            String countries = paymentFormConfigurationRequest.getContractConfiguration().getProperty(Constants.ContractConfigurationKeys.COUNTRIES).getValue();
+            String countries = paymentFormConfigurationRequest.getContractConfiguration().getProperty(ContractConfigurationKeys.COUNTRIES).getValue();
             if (PluginUtils.isEmpty(countries)) {
                 throw new InvalidDataException("country must not be empty");
             }
 
+            List<PaymentFormField> customFields = new ArrayList<>();
             listCountryCode = PluginUtils.createListCountry(countries);
 
-            List<SelectOption> banks = this.getBanks(paymentFormConfigurationRequest.getPluginConfiguration(), listCountryCode);
-
             // Build the payment form
-            CustomForm form = BankTransferForm.builder()
-                    .withBanks(banks)
-                    .withDescription(i18n.getMessage("paymentForm.description", locale))
+            PaymentFormInputFieldSelect inputFieldSelect = PaymentFormInputFieldSelect.PaymentFormFieldSelectBuilder
+                    .aPaymentFormInputFieldSelect()
+                    .withSelectOptions(this.getBanks(paymentFormConfigurationRequest.getPluginConfiguration(), listCountryCode))
+                    .withKey(RequestContextKeys.BANK)
+                    .withLabel("paymentForm.bank.inputField.label")
+                    .withPlaceholder("paymentForm.bank.inputField.placeHolder")
+                    .withRequired(true)
+                    .withRequiredErrorMessage("paymentForm.bank.inputField.requiredErrorMessage")
+                    .withValidationErrorMessage("paymentForm.bank.inputField.validationErrorMessage")
+                    .build();
+            customFields.add(inputFieldSelect);
+
+            CustomForm form = CustomForm.builder()
+                    .withCustomFields(customFields)
                     .withDisplayButton(true)
-                    .withButtonText(i18n.getMessage("paymentForm.buttonText", locale))
-                    .withCustomFields(new ArrayList<>())
+                    .withButtonText(i18n.getMessage("paymentForm.bank.buttonText", locale))
+                    .withDescription(i18n.getMessage("paymentForm.bank.description", locale))
                     .build();
 
             pfcResponse = PaymentFormConfigurationResponseSpecific.PaymentFormConfigurationResponseSpecificBuilder

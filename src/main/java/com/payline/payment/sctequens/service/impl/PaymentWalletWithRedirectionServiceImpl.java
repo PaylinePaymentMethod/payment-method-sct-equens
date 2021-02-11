@@ -3,7 +3,7 @@ package com.payline.payment.sctequens.service.impl;
 import com.payline.payment.sctequens.bean.configuration.RequestConfiguration;
 import com.payline.payment.sctequens.exception.InvalidDataException;
 import com.payline.payment.sctequens.exception.PluginException;
-import com.payline.payment.sctequens.utils.Constants;
+import com.payline.payment.sctequens.utils.constant.RequestContextKeys;
 import com.payline.pmapi.bean.payment.request.WalletRedirectionPaymentRequest;
 import com.payline.pmapi.bean.payment.response.PaymentResponse;
 import com.payline.pmapi.service.PaymentWalletWithRedirectionService;
@@ -24,11 +24,11 @@ public class PaymentWalletWithRedirectionServiceImpl extends com.payline.payment
             // Retrieve payment ID from request context
             if (redirectionPaymentRequest.getRequestContext() == null
                     || redirectionPaymentRequest.getRequestContext().getRequestData() == null
-                    || redirectionPaymentRequest.getRequestContext().getRequestData().get(Constants.RequestContextKeys.PAYMENT_ID) == null) {
+                    || redirectionPaymentRequest.getRequestContext().getRequestData().get(RequestContextKeys.PAYMENT_ID) == null) {
                 throw new InvalidDataException("Missing payment ID from request context");
             }
             final String paymentId = redirectionPaymentRequest.getRequestContext().getRequestData()
-                    .get(Constants.RequestContextKeys.PAYMENT_ID);
+                    .get(RequestContextKeys.PAYMENT_ID);
 
             // check and update payment status
             paymentResponse = this.updatePaymentStatus(paymentId, new RequestConfiguration(
