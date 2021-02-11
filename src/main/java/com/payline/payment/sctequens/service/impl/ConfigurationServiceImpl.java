@@ -11,7 +11,6 @@ import com.payline.payment.sctequens.utils.http.PisHttpClient;
 import com.payline.payment.sctequens.utils.http.PsuHttpClient;
 import com.payline.payment.sctequens.utils.i18n.I18nService;
 import com.payline.payment.sctequens.utils.properties.ReleaseProperties;
-import com.payline.payment.sctequens.utils.security.RSAUtils;
 import com.payline.pmapi.bean.configuration.PartnerConfiguration;
 import com.payline.pmapi.bean.configuration.ReleaseInformation;
 import com.payline.pmapi.bean.configuration.parameter.AbstractParameter;
@@ -95,8 +94,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private PisHttpClient pisHttpClient = PisHttpClient.getInstance();
     private PsuHttpClient psuHttpClient = PsuHttpClient.getInstance();
     private ReleaseProperties releaseProperties = ReleaseProperties.getInstance();
-    private RSAUtils rsaUtils = RSAUtils.getInstance();
-
 
     @Override
     public List<AbstractParameter> getParameters(Locale locale) {
@@ -245,17 +242,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             GetAspspsResponse apspsps = pisHttpClient.getAspsps(requestConfiguration);
 
             // Serialize the list (as JSON)
-            String banks = jsonService.toJson(apspsps);
-
-            // get oldKey or generate first key
-            String key;
-            if (PluginUtils.isEmpty(retrievePluginConfigurationRequest.getPluginConfiguration())) {
-                key = rsaUtils.generateKey();
-            } else {
-                key = PluginUtils.extractKey(retrievePluginConfigurationRequest.getPluginConfiguration());
-            }
-
-            return banks + PluginUtils.SEPARATOR + key;
+            return jsonService.toJson(apspsps);
         } catch (RuntimeException e) {
             LOGGER.error("Could not retrieve plugin configuration due to a plugin error", e);
             return retrievePluginConfigurationRequest.getPluginConfiguration();
